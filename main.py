@@ -20,7 +20,7 @@ print(len(overlayList))
 header = overlayList[0]
 
 #default color
-drawColor = (255, 0, 255)
+drawColor = (255, 0, 0)
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
@@ -59,47 +59,68 @@ while True:
 
             #Checking for the click
             if y1 < 90:
-                if 9 < x1 < 86:
-                    header = overlayList[0]
+                if 9 < x1 < 100:
                     drawColor = (255, 0, 0)
-                elif 174 < x1 < 240:
-                    header = overlayList[10]
+                    if shape == 'freestyle':
+                        header = overlayList[0]
+                    elif shape == 'circle':
+                        header = overlayList[6]
+                    elif shape == 'rectangle':
+                        header = overlayList[7]
+                    elif shape == 'ellipse':
+                        header = overlayList[8]
+                elif 160 < x1 < 240:
                     drawColor = (0, 0, 255)
+                    if shape == 'freestyle':
+                        header = overlayList[10]
+                    elif shape == 'circle':
+                        header = overlayList[11]
+                    elif shape == 'rectangle':
+                        header = overlayList[12]
+                    elif shape == 'ellipse':
+                        header = overlayList[13]
                 elif 300 < x1 < 390:
-                    header = overlayList[1]
                     drawColor = (0, 255, 0)
+                    if shape == 'freestyle':
+                        header = overlayList[1]
+                    elif shape == 'circle':
+                        header = overlayList[2]
+                    elif shape == 'rectangle':
+                        header = overlayList[3]
+                    elif shape == 'ellipse':
+                        header = overlayList[4]
                 elif 462 < x1 < 630:
                     header = overlayList[5]
                     drawColor = (0, 0, 0)
 
             if y1 > 95 and y1 < 148:
-                if x1 < 15:
-                    header = overlayList[1]
+                #if x1 < 15:
+                 #   header = overlayList[9]
 
-                elif 5 < x1 < 90 and drawColor == (255, 0, 255):
+                if 5 < x1 < 90 and drawColor == (255, 0, 0):
                     header = overlayList[0]
                     shape = 'freestyle'
-                elif 162 < x1 < 240 and drawColor == (255, 0, 255):
+                elif 162 < x1 < 240 and drawColor == (255, 0, 0):
                     header = overlayList[6]
                     shape = 'circle'
-                elif 315 < x1 < 396 and drawColor == (255, 0, 255):
+                elif 315 < x1 < 396 and drawColor == (255, 0, 0):
                     header = overlayList[7]
                     shape = 'rectangle'
-                elif 515 < x1 < 604 and drawColor == (255, 0, 255):
+                elif 515 < x1 < 604 and drawColor == (255, 0, 0):
                     header = overlayList[8]
-                    shape = 'elipse'
-                elif 5 < x1 < 90 and drawColor == (255, 0, 0):
+                    shape = 'ellipse'
+                elif 5 < x1 < 90 and drawColor == (0, 0, 255):
                     header = overlayList[10]
                     shape = 'freestyle'
-                elif 162 < x1 < 240 and drawColor == (255, 0, 0):
+                elif 162 < x1 < 240 and drawColor == (0, 0, 255):
                     header = overlayList[11]
                     shape = 'circle'
-                elif 315 < x1 < 396 and drawColor == (255, 0, 0):
+                elif 315 < x1 < 396 and drawColor == (0, 0, 255):
                     header = overlayList[12]
                     shape = 'rectangle'
-                elif 515 < x1 < 604 and drawColor == (255, 0, 0):
+                elif 515 < x1 < 604 and drawColor == (0, 0, 255):
                     header = overlayList[13]
-                    shape = 'elipse'
+                    shape = 'ellipse'
                 if 5 < x1 < 90 and drawColor == (0, 255, 0):
                     header = overlayList[1]
                     shape = 'freestyle'
@@ -111,7 +132,7 @@ while True:
                     shape = 'rectangle'
                 elif 515 < x1 < 604 and drawColor == (0, 255, 0):
                     header = overlayList[4]
-                    shape = 'elipse'
+                    shape = 'ellipse'
             cv2.rectangle(img, (x1, y1 - 15), (x2, y2 + 15), drawColor, cv2.FILLED)
 
         # 5. if Drawing mode - index finger is up
@@ -126,8 +147,9 @@ while True:
                 cv2.line(img, (xp, yp), (x1, y1), drawColor, eraserThickness)
                 cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, eraserThickness)
             else:
-                cv2.line(img, (xp, yp), (x1, y1), drawColor, brushThickness)
-                cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
+                if shape == 'freestyle':
+                    cv2.line(img, (xp, yp), (x1, y1), drawColor, brushThickness)
+                    cv2.line(imgCanvas, (xp, yp), (x1, y1), drawColor, brushThickness)
 
 
                 xp, yp = x1, y1
@@ -180,7 +202,7 @@ while True:
                         cv2.circle(imgCanvas, (x0, y0), u, drawColor)
 
                 # Ellipse
-                if shape == 'elipse':
+                if shape == 'ellipse':
                     z1, z2 = lmList[4][1:]
                     # cv2.ellipse(img,(x1,y1),(int(z1/2),int(z2/2)),0,0,360,255,0)
                     a = z1 - x1
@@ -191,12 +213,12 @@ while True:
                         a = -1 * a
                     if b < 0:
                         b = -1 * b
-                    cv2.ellipse(img, (x1, y1), (a, b), 0, 0, 360, 255, 0)
+                    cv2.ellipse(img, (x1, y1), (a, b), 0, 0, 360, drawColor)
                     cv2.putText(img, "Major AL, Minor AL = ", (0, 700), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
                     cv2.putText(img, str(a), (550, 700), cv2.FONT_HERSHEY_PLAIN, 3, (123, 20, 255), 3)
                     cv2.putText(img, str(b), (700, 700), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
                     if fingers[4]:
-                        cv2.ellipse(imgCanvas, (x1, y1), (a, b), 0, 0, 360, 255, 0)
+                        cv2.ellipse(imgCanvas, (x1, y1), (a, b), 0, 0, 360, drawColor)
 
             xp, yp = x1, y1
 
